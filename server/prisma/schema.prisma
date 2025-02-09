@@ -1,0 +1,213 @@
+// datasource and generator configuration
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// enums
+enum UserRole {
+  FARMER
+  BUYER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum FarmingType {
+  CONVENTIONAL
+  ORGANIC
+  OTHER
+}
+
+enum CropType {
+  CEREAL
+  VEGETABLE
+  FRUIT
+  PULSE
+  LEGUME
+  OILSEED
+  FODDER
+  SUGAR_CROP
+  SPICE
+  COTTON
+  TOBACCO
+  FLOWER
+  MEDICINAL
+  FIBER_CROP
+  ORNAMENTAL
+  AQUATIC_CROP
+  PLANTATION
+  MISCELLANEOUS
+}
+
+enum ContractStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  TERMINATED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum NegotiationStatus {
+  ONGOING
+  ACCEPTED
+  REJECTED
+}
+
+// models
+model User {
+  id               String              @id @default(uuid())
+  name             String
+  aadharNumber     String?
+  phoneNumber      String?
+  email            String              @unique
+  password         String
+  role             UserRole            @default(FARMER)
+  address          Address?            @relation(fields: [addressId], references: [id])
+  addressId        String?
+  farmDetails      FarmDetails?
+  farmDetailsId    String?
+  paymentDetails   PaymentPreferences?
+  paymentDetailsId String?
+  crops            String[]
+  offers           Offer[]
+  offerCreator     Negotiation[]       @relation("offerCreator")
+  offerOfferedTo   Negotiation[]       @relation("offerOfferedTo")
+  contracts        Contract[]
+  notifications    Notification[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now()) @updatedAt
+}
+
+model Address {
+  id       String  @id @default(uuid())
+  state    String
+  district String?
+  place    String?
+  pin      String?
+  users    User[]
+}
+
+model FarmDetails {
+  id                String      @id @default(uuid())
+  farmSize          Float
+  farmingType       FarmingType
+  irrigationMethods String[]
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String      @unique
+}
+
+model PaymentPreferences {
+  id                String   @id @default(uuid())
+  paymentTerms      String
+  accountHolderName String
+  accountNumber     String
+  ifscCode          String
+  upiId             String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String   @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+}
+
+model Offer {
+  id            String     @id @default(uuid())
+  cropName      String
+  description   String?
+  cropType      CropType
+  price         Float
+  quantity      Int
+  harvestTime   DateTime?
+  location      String
+  offerDuration Int
+  paymentTerms  String
+  createdBy     String
+  createdByUser User       @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  contracts     Contract[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Negotiation {
+  id             String             @id @default(uuid())
+  currentTermsId String             @unique
+  createdById    String
+  offeredToId    String
+  status         NegotiationStatus? @default(ONGOING)
+  details        String?
+  currentTerms   CurrentTerms       @relation(fields: [currentTermsId], references: [id], onDelete: Cascade)
+  creator        User               @relation("offerCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  offeredTo      User               @relation("offerOfferedTo", fields: [offeredToId], references: [id], onDelete: Cascade)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  turn           String
+  ongoing        Boolean            @default(true)
+}
+
+model CurrentTerms {
+  id            String        @id @default(uuid())
+  cropName      String
+  description   String?
+  cropType      CropType
+  price         Float
+  quantity      Int
+  harvestTime   DateTime?
+  location      String
+  offerDuration Int
+  paymentTerms  String
+  createdBy     String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  logistics     String        @default("Arranged by buyer")
+  negotiations  Negotiation[]
+}
+
+model Contract {
+  id        String         @id @default(uuid())
+  status    ContractStatus @default(PENDING)
+  offerId   String
+  offer     Offer          @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User           @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  payments  Payment[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Payment {
+  id         String        @id @default(uuid())
+  amount     Float
+  status     PaymentStatus @default(PENDING)
+  contractId String
+  contract   Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model requiredCrops {
+  id        String   @id @default(uuid())
+  cropName  String   @unique
+  userId   String[] 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  status    Boolean  @default(false)
+  userId    String
+  offerId   String[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
