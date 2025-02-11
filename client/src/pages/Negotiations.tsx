@@ -53,8 +53,8 @@ const Negotiations = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-20 max-w-7xl">
-      <div className="space-y-4 mb-8">
+    <div className="container mx-auto px-10 py-20 max-w-7xl">
+      <div className="space-y-4 mb-8 text-center max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold tracking-tight">Negotiations</h1>
         <p className="text-muted-foreground">
           Track and manage all your ongoing and completed negotiations
