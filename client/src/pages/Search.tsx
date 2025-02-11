@@ -49,14 +49,11 @@ export default function SearchPage() {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [visibleOffers, setVisibleOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  //filter state
   const [cropType, setCropType] = useState("");
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [maxPrice, setMaxPrice] = useState(100);
-  //sort state
   const [sortBy, setSortBy] = useState("newest");
   const navigate = useNavigate();
-  //view details state
   const [viewDetails, setViewDetails] = useState(false);
   const [offerDetails, setOfferDetails] = useState<OfferDetails | null>(null);
   const [initOffers, setInitOffers] = useState<Offer[]>([]);
@@ -240,7 +237,7 @@ export default function SearchPage() {
   return viewDetails ? (
     <div className="w-full py-24 px-8 sm:px-12 md:px-16">
       <div className="min-h-screen w-full bg-gradient-to-br from-background to-primary/5">
-        <main className="w-full pt-24">
+        <main className="w-full ">
           <div className="max-w-7xl mx-auto space-y-6 px-4">
             <Button
               variant="ghost"

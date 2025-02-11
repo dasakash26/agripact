@@ -19,13 +19,6 @@ export const OfferPreview: React.FC<OfferPreviewProps> = ({
     : 0;
   return (
     <>
-      <Button
-        variant="ghost"
-        className="mb-8 ml-2 mt-2 z-100 absolute top-20"
-        onClick={() => resetForm && resetForm()}
-      >
-        <ArrowLeftCircle />
-      </Button>
       <CardHeader className="flex flex-row justify-between bg-muted mb-8">
         <div className="flex items-center gap-3">
           <Wheat className="w-8 h-8" />
