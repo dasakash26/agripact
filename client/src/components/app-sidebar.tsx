@@ -6,6 +6,8 @@ import {
   Search,
   Settings,
   Menu,
+  Clapperboard,
+  ClipboardCheck,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -47,7 +49,7 @@ const items = [
   {
     title: "Contracts",
     url: "/contracts",
-    icon: Handshake,
+    icon: ClipboardCheck,
   },
   {
     title: "Settings",
@@ -60,8 +62,8 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }) => {
   return [
     "w-full flex items-center gap-3 p-2.5 rounded-lg transition-all duration-200 whitespace-nowrap",
     isActive
-      ? "bg-primary/10 text-primary font-medium"
-      : "text-muted-foreground hover:bg-primary/5 hover:text-primary",
+      ? "bg-green-100/20 text-green-700 font-medium"
+      : "text-muted-foreground hover:bg-green-50/20 hover:text-green-700",
   ].join(" ");
 };
 
@@ -87,7 +89,7 @@ export function AppSidebar() {
         collapsible="offcanvas"
         variant="sidebar"
       >
-        <div className="flex items-center justify-center h-16 bg-primary text-primary-foreground overflow-hidden">
+        <div className="flex items-center justify-center h-16 bg-green-700 text-white overflow-hidden">
           <Logo />
         </div>
         <SidebarContent className="relative px-3 py-4">
@@ -115,11 +117,9 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter className="px-3 py-4 border-t">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <ProfileDropdown />
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <div className="flex items-center">
+            <ProfileDropdown />
+          </div>
         </SidebarFooter>
       </Sidebar>
 
